@@ -1,0 +1,34 @@
+*.pdf
+*.docx
+#################################################
+# Add some folder to .gitignore
+data/
+#################################################
+# Jupyter Notebook checkpoints and output files
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+*.ipynb_checkpoints
+*.html
+#################################################
+# Virtual environment or dependency directories
+venv/
+env/
+.venv/
+.env/
+#################################################
+# Python byte-compiled files
+_pycache_/
+*.pyc
+*.pyo
+#################################################
+# Log files and other temporary or generated files
+logs/
+temp/
+*.log
+#################################################
+# System-specific or editor-generated files
+.DS_Store
+.vscode/
+.idea/
+.jupyter/
+#################################################
