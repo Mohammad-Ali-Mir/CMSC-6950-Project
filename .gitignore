@@ -1,5 +1,8 @@
 *.pdf
 *.docx
+*.png
+*.jpg
+*.jpeg
 #################################################
 # Add some folder to .gitignore
 data/
