@@ -5,24 +5,24 @@ In the following, you will see a full guide to understand the project and reprod
 # 1. Description of Dataset
 Climate data for St. John's, sourced from https://stjohns.weatherstats.ca/download.html.
 We obtained 730 (two-year) daily data points from November 01, 2021, to October 31, 2023.
-## 1.1.	Attributes
+## 1.1. Attributes
 <caption>Dataset Overview of Used Columns</caption>
 
-| Feature Name                   | Description                                                            | Short Name         |
-|---------------------------------|------------------------------------------------------------------------|--------------------|
-| date                            | date as index (yyyy-mm-dd)                                            | date               |
-| max_temperature                 | daily minimum temperature (°C)                                        | Max Temp           |
-| min_temperature                 | daily minimum temperature                                              | Min Temp           |
-| avg_temperature                 | average between the daily maximum and minimum temperatures            | Avg Temp           |
-| avg_hourly_temperature          | average of all the hourly temperatures within the day                  | Avg hr Temp        |
-| max_wind_speed                  | daily maximum wind speed (km/h)                                       | Max Wind           |
-| min_wind_speed                  | daily minimum wind speed                                               | Min Wind           |
-| avg_hourly_wind_speed           | average between the daily maximum and minimum wind speeds              | Avg hr Wind        |
-| precipitation                   | amount of rain/snow/etc. received. 1cm snow ~ 1mm precipitation. The exact amount depends on snow density (mm) | Precip |
-| avg_hourly_relative_humidity    | average of all the hourly relative humidities within the day (%)       | Avg hr Humid       |
-| avg_hourly_pressure_sea         | average of all the hourly pressures within the day (kPa)               | Avg hr Press       |
-| avg_hourly_visibility           | average of all the hourly visibilities within the day (m)             | Avg hr Visib       |
-# 2.	Methodology
+| Feature Name                   | Description                                                           | Short Name         |
+|---------------------------------|-----------------------------------------------------------------------|--------------------|
+| date                            | date as index (yyyy-mm-dd)                                           | date               |
+| max_temperature                 | daily minimum temperature (°C)                                       | Max Temp           |
+| min_temperature                 | daily minimum temperature                                             | Min Temp           |
+| avg_temperature                 | average between the daily maximum and minimum temperatures           | Avg Temp           |
+| avg_hourly_temperature          | average of all the hourly temperatures within the day                 | Avg hr Temp        |
+| max_wind_speed                  | daily maximum wind speed (km/h)                                      | Max Wind           |
+| min_wind_speed                  | daily minimum wind speed                                              | Min Wind           |
+| avg_hourly_wind_speed           | average between the daily maximum and minimum wind speeds             | Avg hr Wind        |
+| precipitation                   | amount of rain/snow/etc. received. 1cm snow ~ 1mm precipitation. <br> The exact amount depends on snow density (mm)| Precip |
+| avg_hourly_relative_humidity    | average of all the hourly relative humidities within the day (%)      | Avg hr Humid       |
+| avg_hourly_pressure_sea         | average of all the hourly pressures within the day (kPa)              | Avg hr Press       |
+| avg_hourly_visibility           | average of all the hourly visibilities within the day (m)            | Avg hr Visib       |
+# 2. Methodology
 - Present (visualize) data to understand its characteristics. 
 - Introduce different approaches to detect extreme values.
 - Explore trends in our data.
@@ -31,7 +31,7 @@ We obtained 730 (two-year) daily data points from November 01, 2021, to October 
 - Do descriptive statistics of our data and show their probability distributions.
 ## 2.2.	Extreme Values
 - Plot boxplots of the columns.
-- Use Inter quartile Range (IQR) method to replace the outliers with the IQR limits:
+- Use Inter Quartile Range (IQR) method to replace the outliers with the IQR limits:
 
 $$
 IQR = Q_3 - Q_1
@@ -50,29 +50,93 @@ As our (temperature) data follows a cyclical pattern and experiences regular bum
 - **Correlation Heatmap**:
   
   Survey the relationship between every two features from all columns
-- **Moving Average** over features:
+- **Moving Average**:
   
   Visualize a moving average time series with a favorite window size (10, 30 days, etc.) over an original column data 
 - **Monthly Average Total Precipitation Barplot**:
   
   Sum up the total precipitation for each month and average it for all the same months as a group. Then, show results in a bar plot
-# 3. Full Instruction to Reproduce Figures in Report
+# 3. Figures Reproduction 
 ## 3.1.	Project Files & Folders
-In this project, we performed the analyses through the `code_project.ipynb` available in the `code` folder. In that folder, We have defined some computational functions in `functions.py` and have tested them sufficiently by `pytest` in `test_functions.py`.
-
-The used dataset is in the `data` folder. The `daily.csv` file contains daily climate data for the mentioned period, and the `normal_daily.csv` file contains the 30-year historical values.
-
-Our produced results (plots) are in the `figures` folder.
-
-You can access the proposal and project report files in the 'reports' folder.
+- In this project, we performed all analyses through the `code_project.ipynb` available in the `code` folder. In that folder, We have defined some computational functions in `functions.py` and have tested them sufficiently by `pytest` in `test_functions.py`.
+- The used dataset is in the `data` folder. The `daily.csv` file contains daily climate data for the mentioned period, and the `normal_daily.csv` file contains the 30-year historical values.
+- Our produced results (plots) are in the `figures` folder.
+- You can access the proposal and project report files in the 'reports' folder.
 ## 3.2.	Prerequisites
-To install the required libraries, use the following command:
+The `requirements.txt` file has mentioned the appropriate library names and versions used in our project.
+## 3.3.	Run
+You can simply open the `code_project.ipynb` file in the `code` folder, use `Jupyter Notebook`, click on the `Restart and Run All Cells` option, then, all results and figures will be produced automatically. You don't need to do any other steps. But just in case the user wants to know more about the specifics of production of each figure, they can follow the below steps:
+## 3.4. Full Instruction to Reproduce Figures in Report
+Initial imports:
 
-```python
-pip install -r requirements.txt
+```import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from matplotlib.dates import MonthLocator, DateFormatter
+import matplotlib.ticker as ticker
+import calendar
+from functions import *
 ```
 
-This command will install the libraries listed in the `requirements.txt` file.
-## 3.3.	Run
-If you open the `code_project.ipynb` file in the `code` folder and open it using `Jupyter Notebook` and click on the `Restart and Run All Cells` option, all results and figures will be produced automatically. You don't need to do any other steps. But just in case if the user want to know more, he can follow the below steps:
-## 3.4.	Figure 1
+Load data:
+
+```
+cols = ['date',
+        'max_temperature','min_temperature','avg_hourly_temperature','avg_temperature',\
+        'max_wind_speed','avg_hourly_wind_speed','min_wind_speed','precipitation',\
+        'avg_hourly_relative_humidity','avg_hourly_pressure_sea','avg_hourly_visibility']
+df = pd.read_csv('../data/daily.csv', parse_dates=['date'], index_col=['date'], dayfirst=True, usecols=cols)
+
+hist_cols = ['date','max_temperature_v','min_temperature_v','max_wind_speed_v','min_wind_speed_v','precipitation_v']
+df_hist = pd.read_csv('../data/normal_daily.csv', parse_dates=['date'], index_col=['date'], dayfirst=True, usecols=hist_cols)
+
+selected_cols = ['avg_hourly_temperature','avg_hourly_wind_speed','precipitation']
+```
+
+### 3.4.1. Figure 1: Time-series illustration
+In this figure, we aim to get to know our data by plotting them in a series of time-series plot. We chose to present our temperature group data in a time-series plot.
+
+In Figure 1, We have plotted `max_temperature`, `min_temperature`, `avg_temperature` as red, blue, and black lines, respectively, over date in one time-series plot. As you can see, the average temperature has been placed between the maximum and minimum temperatures. You can see the time series over the two-year period (2021-11-01 to 2023-10-31). We can also have the time series plots for the other features, but we showed for temperatures as samples.
+
+```# Set the style for Seaborn
+sns.set(style="whitegrid")
+
+# Create a time series plot for temperature
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the temperature columns with Seaborn
+sns.lineplot(data=df, x=df.index, y='max_temperature', ax=ax, label='Max Temperature', color='red')
+sns.lineplot(data=df, x=df.index, y='avg_temperature', ax=ax, label='Avg Temperature', color='black')
+sns.lineplot(data=df, x=df.index, y='min_temperature', ax=ax, label='Min Temperature', color='blue')
+
+# Customize the plot
+ax.legend(loc='upper left', bbox_to_anchor=(-0.01, 1.15))
+ax.set_xlabel('\nDate\n\n(From 2021-11-01 to 2023-10-31)')
+ax.set_ylabel('Temperature (°C)')
+ax.set_title('Temperature Over Time')
+
+# Set grids
+ax.minorticks_on()
+plt.grid(True, which='major', linestyle='-', linewidth=0.8, color='gray')
+plt.grid(True, which='minor', linestyle='--', linewidth=0.5, color='gray')
+
+ax.set_xlim((df.index.min(), df.index.max()+pd.Timedelta(days=1)))
+
+month_locator = MonthLocator(interval=4)
+ax.xaxis.set_major_locator(month_locator)
+ax.xaxis.set_minor_locator(MonthLocator())
+
+plt.tight_layout()
+plt.savefig('../figures/1.png', facecolor='w', dpi=200)
+plt.show()
+```
+
+### 3.4.2. Figure 2: Probability density and normalized histogram distributions
+### 3.4.3. Figure 3: Boxplots for selected columns
+### 3.4.4. Figure 4: Illustration of modified & original columns time series
+### 3.4.5. Figure 5: Illustration of extreme values detection using historical values
+### 3.4.6. Figure 6: Correlation heatmap
+### 3.4.7. Figure 7: Moving average illustration for trend extraction
+### 3.4.8. Figure 8: Average monthly precipitation bar plot
