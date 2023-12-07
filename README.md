@@ -58,33 +58,22 @@ As our (temperature) data follows a cyclical pattern and experiences regular bum
   Sum up the total precipitation for each month and average it for all the same months as a group. Then, show results in a bar plot
 # 3. Figures Reproduction 
 ## 3.1.	Project Files & Folders
-- In this project, we performed all analyses through the `code_project.ipynb` available in the `code` folder. In that folder, We have defined some computational functions in `functions.py` and have tested them sufficiently by `pytest` in `test_functions.py`.
+- In this project, we performed all analyses through the `code_project.ipynb` available in the `code` folder. In that folder, We have defined all the functions in `functions.py` and have tested the computational ones (the first two) sufficiently by `pytest` in `test_functions.py`.
 - The used dataset is in the `data` folder. The `daily.csv` file contains daily climate data for the mentioned period, and the `normal_daily.csv` file contains the 30-year historical values.
 - Our produced results (plots) are in the `figures` folder.
-- You can access the proposal and project report files in the 'reports' folder.
+- You can access the proposal and project report files in the `reports` folder.
 ## 3.2.	Prerequisites
-The `requirements.txt` file has mentioned the appropriate library names and versions used in our project.
+The `requirements.txt` file has mentioned the appropriate library names and their versions used in our project.
 ## 3.3.	Run
 You can simply open the `code_project.ipynb` file in the `code` folder, use `Jupyter Notebook`, click on the `Restart and Run All Cells` option, then, all results and figures will be produced automatically. You don't need to do any other steps. But just in case the user wants to know more about the specifics of production of each figure, they can follow the below steps:
 ## 3.4. Full Instruction to Reproduce Figures in Report
-Initial imports:
+First, you need to do the initial set ups and imports in the `code` folder:
 
-```import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-from matplotlib.dates import MonthLocator, DateFormatter
-import matplotlib.ticker as ticker
-import calendar
+```
 from functions import *
-```
 
-Load data:
-
-```
-cols = ['date',
-        'max_temperature','min_temperature','avg_hourly_temperature','avg_temperature',\
+# Load data
+cols = ['date','max_temperature','min_temperature','avg_hourly_temperature','avg_temperature',\
         'max_wind_speed','avg_hourly_wind_speed','min_wind_speed','precipitation',\
         'avg_hourly_relative_humidity','avg_hourly_pressure_sea','avg_hourly_visibility']
 df = pd.read_csv('../data/daily.csv', parse_dates=['date'], index_col=['date'], dayfirst=True, usecols=cols)
@@ -93,50 +82,147 @@ hist_cols = ['date','max_temperature_v','min_temperature_v','max_wind_speed_v','
 df_hist = pd.read_csv('../data/normal_daily.csv', parse_dates=['date'], index_col=['date'], dayfirst=True, usecols=hist_cols)
 
 selected_cols = ['avg_hourly_temperature','avg_hourly_wind_speed','precipitation']
+column_mapping = {
+      'max_temperature': 'Max Temp',
+      'min_temperature': 'Min Temp',
+      'avg_hourly_temperature': 'Avg hr Temp',
+      'avg_temperature': 'Avg Temp',
+      'max_wind_speed': 'Max Wind',
+      'avg_hourly_wind_speed': 'Avg hr Wind',
+      'min_wind_speed': 'Min Wind',
+      'avg_hourly_relative_humidity': 'Avg hr Humid',
+      'avg_hourly_pressure_sea': 'Avg hr Press',
+      'avg_hourly_visibility': 'Avg hr Visib',
+      'precipitation': 'Precip'}
 ```
 
 ### 3.4.1. Figure 1: Time-series illustration
-In this figure, we aim to get to know our data by plotting them in a series of time-series plot. We chose to present our temperature group data in a time-series plot.
+<details><summary>What this figure does:</summary>  
+In this figure, we aim to get to know our data (temperature group) by plotting them in the same time-series plot.
 
-In Figure 1, We have plotted `max_temperature`, `min_temperature`, `avg_temperature` as red, blue, and black lines, respectively, over date in one time-series plot. As you can see, the average temperature has been placed between the maximum and minimum temperatures. You can see the time series over the two-year period (2021-11-01 to 2023-10-31). We can also have the time series plots for the other features, but we showed for temperatures as samples.
+<p>&nbsp;</p>
 
-```# Set the style for Seaborn
-sns.set(style="whitegrid")
+In Figure 1, We have plotted `max_temperature`, `min_temperature`, `avg_temperature` as red, blue, and black lines, respectively, over `date` in one time-series plot. As you can see, the average temperature has been placed between the maximum and minimum temperatures. You can see the time series over the two years (2021-11-01 to 2023-10-31). We can also have the time series plots for the other features, but we showed temperatures as samples.
+</details> 
 
-# Create a time series plot for temperature
-fig, ax = plt.subplots(figsize=(12, 8))
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
 
-# Plot the temperature columns with Seaborn
-sns.lineplot(data=df, x=df.index, y='max_temperature', ax=ax, label='Max Temperature', color='red')
-sns.lineplot(data=df, x=df.index, y='avg_temperature', ax=ax, label='Avg Temperature', color='black')
-sns.lineplot(data=df, x=df.index, y='min_temperature', ax=ax, label='Min Temperature', color='blue')
-
-# Customize the plot
-ax.legend(loc='upper left', bbox_to_anchor=(-0.01, 1.15))
-ax.set_xlabel('\nDate\n\n(From 2021-11-01 to 2023-10-31)')
-ax.set_ylabel('Temperature (°C)')
-ax.set_title('Temperature Over Time')
-
-# Set grids
-ax.minorticks_on()
-plt.grid(True, which='major', linestyle='-', linewidth=0.8, color='gray')
-plt.grid(True, which='minor', linestyle='--', linewidth=0.5, color='gray')
-
-ax.set_xlim((df.index.min(), df.index.max()+pd.Timedelta(days=1)))
-
-month_locator = MonthLocator(interval=4)
-ax.xaxis.set_major_locator(month_locator)
-ax.xaxis.set_minor_locator(MonthLocator())
-
-plt.tight_layout()
-plt.savefig('../figures/1.png', facecolor='w', dpi=200)
-plt.show()
+```
+df_copy = df.copy()
+time_series_temperatures(df_copy)
 ```
 
 ### 3.4.2. Figure 2: Probability density and normalized histogram distributions
+<details><summary>What this figure does:</summary>  
+The histograms were plotted using `plot_histograms_density` function. In that function, we used `.hist` and `.density` to plot the distribution of our columns' probabilities.
+
+<p>&nbsp;</p>
+
+The plot is shown for `avg_hourly_temperature`, `avg_hourly_wind_speed`, and `precipitation` features. 
+</details>
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+plot_histograms_density(df, selected_cols)
+```
 ### 3.4.3. Figure 3: Boxplots for selected columns
+<details><summary>What this figure does:</summary>  
+We want to see the boxplots of our columns. In this way, we can clearly understand the distribution and outliers of our data.
+
+<p>&nbsp;</p>
+
+Boxplots were plotted for selected columns: `avg_hourly_temperature`, `avg_hourly_wind_speed`, and `precipitation`. The points outside the 1.5 x interquartile range are outliers. Outliers based on IQR method are enormous for precipitation. For `avg_hourly_temperature`, we do not see any outliers.
+</details> 
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+boxplots(df, selected_cols)
+```
 ### 3.4.4. Figure 4: Illustration of modified & original columns time series
+<details><summary>What this figure does:</summary>  
+The used scale in (scale x IQR) is 1.5. Orange shows parts of the original time series replaced by upper or lower IQR method limits. We see a massive correction for precipitation. Outlier ratios are 0, 1.23, and 12.19% of the data points in the above features, respectively.
+
+<p>&nbsp;</p>
+
+To remove outliers, we developed `remove_outliers_IQR` function. In this function, the computational `iqr_limits` function is used for calculating the IQR limits (its test function is available in `test_functions.py` as `test_iqr_limits`). Use `plot_orig_modif_series` function to plot both versions of the original and modified time series on one plot.
+</details>
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+df_iqr = df.copy()[selected_cols]       
+remove_outliers_IQR(df_iqr, df_iqr.columns, scale=1.5)
+plot_orig_modif_series(original=df.copy()[selected_cols], modified=df_iqr, columns=df_iqr.columns, title=f"Original Plot & Modified Plot\n\
+(Outliers Replaced by IQR Limits, Scale = 1.5)")
+```
 ### 3.4.5. Figure 5: Illustration of extreme values detection using historical values
+<details><summary>What this figure does:</summary>  
+Extreme values (yellow and cyan color points) are detected respectively for `max_temperature` and `min_temperature` values (red and blue time series). Historical time series for both high and low temperatures are the two comparatively parallel black lines. The sensitivity values tested for threshold are 5 and 10 days above/below a historical line for each of the temperature lines separately. We see extreme values mostly around pits and peaks in historical trend lines.
+
+<p>&nbsp;</p>
+
+We illustrated specifically for `max_temperature` and `min_temperature`. In this approach, we developed a computational function called `historical_extremes` (its test function available in `test_functions.py` as `test_historical_extremes`) to pinpoint those data points (plotted as a scatter plot) placed outside of a threshold up and down from their corresponding historical values. We analyzed its sensitivity for values of 5 and 10 and have compared the plots. 
+</details> 
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+df_c = df.copy()
+sens = [5, 10]  # sensitivities
+historical_temperatures(df_c, df_hist, sens=[5,10])
+```
 ### 3.4.6. Figure 6: Correlation heatmap
+<details><summary>What this figure does:</summary>  
+This shows the relationship between every two features from all columns. The repetitive upper triangle part of the map has been removed (by applying a mask in plotting). The red color (corresponding to +1) in the plot shows a perfect positive relationship, while blue (corresponding to -1) shows a perfect negative relationship (`coolwarm` was used for `cmap` parameter). Short names have been used for feature names using `column_mapping`.
+
+<p>&nbsp;</p>
+
+We used `.corr()` on our data frame to get correlation matrix; then used `sns.heatmap` to visualize the map.
+</details> 
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+df_c = df.copy()
+heatmap(df=df_c, column_mapping=column_mapping)
+```
 ### 3.4.7. Figure 7: Moving average illustration for trend extraction
+<details><summary>What this figure does:</summary>  
+Moving average (blue series) has been done with a window of 10 days on selected features' original data (gray series). The time span is from 2021-11-01 to 2023-10-31.
+
+<p>&nbsp;</p>
+
+In the Moving Average method, we have a function called `plot_moving_average`, through which you can visualize a moving average time series over the original column data with a favorite window size (10, 30 days, etc.). We used `df.rolling()` with a 10-day window size and then `.mean()` to calculate the moving averages.
+</details> 
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+cols = selected_cols
+plot_moving_average(df.copy(), columns=cols, window_size=10)
+```
 ### 3.4.8. Figure 8: Average monthly precipitation bar plot
+<details><summary>What this figure does:</summary>  
+Each bar for each specific month shows the average of total of daily precipitations (rain, snow equivalent, etc) during that month. The precipitation unit is mm.
+
+<p>&nbsp;</p>
+
+What the function does is that it sums up the total precipitation in each month. Then it averages for all the same months as a group. Then, it shows the results in a bar plot.
+</details> 
+
+<p>&nbsp;</p>
+To reproduce this figure, just run the following after the initial imports:
+
+```
+df_c = df.copy()
+precipitation_monthly(df_c)
+```
