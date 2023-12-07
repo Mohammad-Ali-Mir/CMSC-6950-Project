@@ -1,5 +1,9 @@
 python==3.9.16
+pytest==7.4.2
 pandas==1.5.2
 numpy==1.23.5
 matplotlib==3.6.2
 seaborn==0.12.2
+notebook==6.5.2
+jupyter==1.0.0
+jupyterlab==3.5.2
