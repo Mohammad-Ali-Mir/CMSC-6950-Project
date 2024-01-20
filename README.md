@@ -33,13 +33,9 @@ We obtained 730 (two-year) daily data points from November 01, 2021, to October 
 - Plot boxplots of the columns.
 - Use Inter Quartile Range (IQR) method to replace the outliers with the IQR limits:
 
-$$
-IQR = Q_3 - Q_1
-$$
+$$IQR = Q_3 - Q_1$$
 
-$$
-Upper/Lower ~ limits = Q_{3/1} ± scale ~ × ~IQR
-$$
+$$Upper/Lower ~ limits = Q_{3/1} ± scale ~ × ~IQR$$
 
 As our (temperature) data follows a cyclical pattern and experiences regular bumps based on seasonal variations, the assumption of a normal distribution may not hold. So, we focused on using a comparison with historical values.
 - Use 30-year historical (normal) values for `max_temperature` and `min_temperature`.
