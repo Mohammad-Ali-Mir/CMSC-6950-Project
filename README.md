@@ -38,7 +38,7 @@ IQR = Q_3 - Q_1
 $$
 
 $$
-Upper/Lower ~ limits = Q_1 ± scale ~ × ~IQR
+Upper/Lower ~ limits = Q_{3/1} ± scale ~ × ~IQR
 $$
 
 As our (temperature) data follows a cyclical pattern and experiences regular bumps based on seasonal variations, the assumption of a normal distribution may not hold. So, we focused on using a comparison with historical values.
